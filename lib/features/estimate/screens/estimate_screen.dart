@@ -282,7 +282,8 @@ class _EstimateScreenState extends State<EstimateScreen> {
         labourChargecontroller.text ="${selectedItem.itemLCharges?.toStringAsFixed(2) ?? "0.00"}";
         otherChargescontroller.text ="${selectedItem.itemOCharges?.toStringAsFixed(2) ?? "0.00"}";
         studdValuecontroller.text = "${selectedItem.itemStudValue?.toStringAsFixed(2) ?? "0.00"}";
-        gst1controller.text = "${selectedItem.itemGSTPcnt?.toStringAsFixed(2) ?? "3.00"}";
+        gst1controller.text = "${selectedItem.itemGSTPcnt?.toStringAsFixed(3) ?? "3.000"
+            ""}";
         gst2controller.text ="${selectedItem.itemGSTAmt?.toStringAsFixed(2) ?? "0.00"}";
         totalpricecontroller.text = "${selectedItem.itemSPrice?.toStringAsFixed(2) ?? "0.00"}";
 
@@ -515,7 +516,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 textAlign: TextAlign.right,
 
                                 focusNode: purity1Focus,
-                                // keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'PURITY',
                                   border: OutlineInputBorder(
@@ -536,7 +537,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 textAlign: TextAlign.right,
 
                                 focusNode: purity2Focus,
-                                // keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: '',
                                   border: OutlineInputBorder(
@@ -564,7 +565,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 textAlign: TextAlign.right,
 
                                 focusNode: quantityFocus,
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'QUANTITY',
                                   border: OutlineInputBorder(
@@ -585,7 +586,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 focusNode: gwtFocus,
                                 textAlign: TextAlign.right,
 
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'GROSS WT',
                                   border: OutlineInputBorder(
@@ -606,7 +607,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 focusNode: nwtFocus,
                                 textAlign: TextAlign.right,
 
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'NET WT',
                                   border: OutlineInputBorder(
@@ -634,7 +635,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 focusNode: metalRateFocus,
                                 textAlign: TextAlign.right,
 
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'METAL RATE',
                                   border: OutlineInputBorder(
@@ -675,7 +676,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 textAlign: TextAlign.right,
 
                                 focusNode: metalValueFocus,
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'METAL VALUE',
                                   border: OutlineInputBorder(
@@ -703,7 +704,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 focusNode: labopurrateFocus,
                                 textAlign: TextAlign.right,
 
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'LABOUR RATE',
                                   border: OutlineInputBorder(
@@ -744,9 +745,9 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 focusNode: labourChargeFocus,
                                 textAlign: TextAlign.right,
 
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
-                                  labelText: 'LABOUR CHARGEs',
+                                  labelText: 'LABOUR CHARGES',
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10)),
                                   filled: true,
@@ -772,7 +773,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 focusNode: handlingChargeFocus,
                                 textAlign: TextAlign.right,
 
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'HANDLING CHARGES',
                                   border: OutlineInputBorder(
@@ -793,7 +794,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 focusNode: otherChargesFocus,
                                 textAlign: TextAlign.right,
 
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'OTHER CHARGES',
                                   border: OutlineInputBorder(
@@ -812,7 +813,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                               child: TextFormField(
                                 controller: studdValuecontroller,
                                 focusNode: studdValueFocus,
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.right,
                                 decoration: InputDecoration(
                                   labelText: 'STUDD VALUE',
@@ -840,7 +841,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 controller: totalpricecontroller,
                                 focusNode: totalpriceFocus,
                                 textAlign: TextAlign.right,
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'TOTAL PRICE',
                                   border: OutlineInputBorder(
@@ -859,7 +860,8 @@ class _EstimateScreenState extends State<EstimateScreen> {
                               child: TextFormField(
                                 controller: gst1controller,
                                 focusNode: gst1Focus,
-                                // keyboardType: TextInputType.number,
+                                 textAlign: TextAlign.right,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'GST',
                                   border: OutlineInputBorder(
@@ -879,7 +881,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 textAlign: TextAlign.right,
                                 controller: gst2controller,
                                 focusNode: gst2Focus,
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: '',
                                   border: OutlineInputBorder(
@@ -900,7 +902,7 @@ class _EstimateScreenState extends State<EstimateScreen> {
                                 textAlign: TextAlign.right,
                                 controller: sellpricecontroller,
                                 focusNode: sellpriceFocus,
-                                // keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelText: 'SELL PRICE',
                                   border: OutlineInputBorder(
