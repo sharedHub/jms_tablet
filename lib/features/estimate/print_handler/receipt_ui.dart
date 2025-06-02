@@ -1,14 +1,80 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 
+import '../../catalogue/models/jewellery_stock_item_data.dart';
+import 'barcode_widget.dart';
+import 'number_to_word.dart';
+
 class ReceiptUi extends StatefulWidget {
-  const ReceiptUi({super.key});
+  final JewelleryStockItemData item;
+
+  const ReceiptUi({super.key, required this.item});
 
   @override
   State<ReceiptUi> createState() => _ReceiptUiState();
 }
 
 class _ReceiptUiState extends State<ReceiptUi> {
+  // Helper method: Number to Words
+  String numberToWords(double number) {
+    final formatter = NumberToWordsFormatter();
+    int numInt = number.toInt();
+    return "${formatter.convert(numInt)} Only";
+  }
+
+  double getTotalGrossWeight() {
+    double total = widget.item.itemGrossWeight ?? 0.0;
+    return total;
+  }
+
+  double getTotalNetWeight() {
+    double total = widget.item.itemNetWeight ?? 0.0;
+    if (widget.item.subItems != null && widget.item.subItems!.isNotEmpty) {
+      total += widget.item.subItems!
+          .map((p) => p.packetWeight ?? 0.0)
+          .reduce((a, b) => a + b);
+    }
+    return total;
+  }
+
+  double getTotalLabourCharges() {
+    return widget.item.itemLCharges ?? 0.0;
+  }
+
+  double getTotalAmount() {
+    double mainAmount = widget.item.itemSPrice ?? 0.0;
+    double packetsAmount = 0.0;
+    if (widget.item.subItems != null && widget.item.subItems!.isNotEmpty) {
+      packetsAmount = widget.item.subItems!
+          .map((p) => (p.packetQuantity ?? 0) * (p.packetRate ?? 0.0))
+          .reduce((a, b) => a + b);
+    }
+    return mainAmount + packetsAmount;
+  }
+
+  double getGSTPercentage() {
+    return widget.item.itemGSTPcnt ?? 3.0;
+  }
+
+  double getCGSTAmount() {
+    double total = getTotalAmount();
+    double cgstPercent = getGSTPercentage() / 2;
+    return total * (cgstPercent / 100);
+  }
+
+  double getSGSTAmount() {
+    return getCGSTAmount();
+  }
+
+  double getGrandTotal() {
+    return getTotalAmount() + getCGSTAmount() + getSGSTAmount();
+  }
+
+  String getTodayDate() {
+    final now = DateTime.now();
+    return "${now.day}-${now.month}-${now.year}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,83 +87,56 @@ class _ReceiptUiState extends State<ReceiptUi> {
               Row(
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     height: MediaQuery.of(context).size.height * 0.05,
-                    child: Center(
-                      child: Text(
-                        "ESTIMATE",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: MediaQuery.of(context).size.width * 0.035,
-                          decoration: TextDecoration.underline,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Text(
+                            "ESTIMATE",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                              MediaQuery.of(context).size.width * 0.035,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1
+                        ),
+                        Center(
+                          child: BarcodeView(
+                            tagNo: widget.item.itemTagNo ?? "",
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 ],
               ),
               Row(
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.1,
-                            child: Text(
-                              "INV NO.: ",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                fontSize: MediaQuery.of(context).size.width * 0.02,
-                              ),
-                            )),
-                        Text(
-                          "DJ / 1792 ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
-),
-                        ),
-                      ],
-                    ),
-                  ),
+
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                     child: Center(
                         child: Text(
-                      "DATE: 19/02/2005",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
-),
-                    )),
+                          "DATE: ${getTodayDate()}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                              MediaQuery.of(context).size.width * 0.02),
+                        )),
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "NAME   : ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
-),
-                      )),
-                  SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      child: Text(
-                        "HEMINA JITENDRA PATIL",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
-),
-                      ))
-                ],
-              ),
+
               Divider(
                 color: Colors.black,
                 thickness: 2,
               ),
-
               // headers
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.04,
@@ -109,9 +148,9 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "DESCRIPTION",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                     SizedBox(
@@ -119,9 +158,9 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "GR. WT",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                     SizedBox(
@@ -129,9 +168,9 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "NET WT",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                     SizedBox(
@@ -139,9 +178,9 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "RATE",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                     SizedBox(
@@ -149,9 +188,9 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "LAB ",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                     SizedBox(
@@ -160,9 +199,9 @@ class _ReceiptUiState extends State<ReceiptUi> {
                         "AMOUNT",
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                   ],
@@ -172,7 +211,6 @@ class _ReceiptUiState extends State<ReceiptUi> {
                 color: Colors.black,
                 thickness: 2,
               ),
-
               // item details
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.05,
@@ -183,169 +221,166 @@ class _ReceiptUiState extends State<ReceiptUi> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.25,
                       child: Text(
-                        "itemDescription",
+                        widget.item.itemDescription ?? "",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // item gross weight to be printed here
+                    // item gross weight
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.1,
                       child: Text(
-                        "2.11",
+                        "${widget.item.itemGrossWeight?.toStringAsFixed(3)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // item net weight to be printed here
+                    // item net weight
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.1,
                       child: Text(
-                        "10.11",
+                        "${widget.item.itemNetWeight?.toStringAsFixed(3)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // item rate is going to be printed here
+                    // rate
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
-                        "110000",
+                        "${widget.item.itemMRate?.toStringAsFixed(2)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // item labour charges will be printed here
+                    // labour charges
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
-                        "1200",
+                        "${widget.item.itemLCharges?.toStringAsFixed(2)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // total amount (that is itemsprcie) will be printed here
+                    // amount = sell price
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.22,
                       child: Text(
-                        "123456",
+                        "${widget.item.itemSPrice?.toStringAsFixed(2)}",
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              // packets details (it can be more than one row)
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // packet description will be printed here
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: Text(
-                        "itemDescription",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
+              // render sub items/packets dynamically
+              if (widget.item.subItems != null &&
+                  widget.item.subItems!.isNotEmpty)
+                ...widget.item.subItems!.map((packet) {
+                  final amount =
+                      (packet.packetQuantity ?? 0) * (packet.packetRate ?? 0.0);
+                  return SizedBox(
+                    key: ValueKey(packet.packetId),
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // packet description
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          child: Text(
+                            "${packet.packetInitial ?? packet.packetDescription}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.width *
+                                    0.014),
+                          ),
+                        ),
+                        // empty for gross wt
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1,
+                          child: Text(
+                            "",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.width *
+                                    0.014),
+                          ),
+                        ),
+                        // net weight
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.1,
+                          child: Text(
+                            "${packet.packetWeight?.toStringAsFixed(3)}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.width *
+                                    0.014),
+                          ),
+                        ),
+                        // rate
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          child: Text(
+                            "${packet.packetRate?.toStringAsFixed(2)}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.width *
+                                    0.014),
+                          ),
+                        ),
+                        // SPcnt -> Labour %
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          child: Text(
+                            "",
+                            // "${packet.packetSPcnt?.toStringAsFixed(2)}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.width *
+                                    0.014),
+                          ),
+                        ),
+                        // amount = rate * weight
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.22,
+                          child: Text(
+                            "${amount.toStringAsFixed(2)}",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.width *
+                                    0.014),
+                          ),
+                        ),
+                      ],
                     ),
-                    // there is no gross weight for packets so they will be empty
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    // packet weight to be printed here (under net weight)
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "10.11",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    // packet rate is going to be printed here
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.15,
-                      child: Text(
-                        "110000",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    // there is no labour charges for packets so they will be empty
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.15,
-                      child: Text(
-                        "1200",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    // packetrate * packet weight should come
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.22,
-                      child: Text(
-                        "123456",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                  ],
+                  );
+                }).toList()
+              else
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  child: Text("No components found"),
                 ),
-              ),
-
               DottedLine(
                 direction: Axis.horizontal,
                 lineLength: double.infinity,
                 lineThickness: 1.0,
                 dashLength: 4.0,
                 dashColor: Colors.black,
-                dashRadius: 0.0,
-                dashGapLength: 4.0,
-                dashGapRadius: 0.0,
               ),
+              Divider(color: Colors.black, thickness: 2),
 
-              // this (item details and packet details section will be repeated if multiple items got printed else only 1
-              // for now i am putting only 1 item and 1 packet and moving to total
-
-              Divider(
-                color: Colors.black,
-                thickness: 2,
-              ),
-
+              // TOTAL ROW
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
                 child: Row(
@@ -353,319 +388,210 @@ class _ReceiptUiState extends State<ReceiptUi> {
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.25,
-                      child:
-                          // DEFAULT VALUE
-                          Text(
+                      child: Text(
                         "TOTAL",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // TOTAL OF GROSS WT
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.1,
                       child: Text(
-                        "12.34",
+                        "${getTotalGrossWeight().toStringAsFixed(2)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // TOTAL OF NET WT
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.1,
                       child: Text(
-                        "12.34",
+                        "${getTotalNetWeight().toStringAsFixed(2)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // empty
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
                         "",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // total of labour rate/charges
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
-                        "12345 ",
+                        "${getTotalLabourCharges().toStringAsFixed(2)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // total of all amount
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.22,
                       child: Text(
-                        "1234567",
+                        "${getTotalAmount().toStringAsFixed(2)}",
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                   ],
                 ),
               ),
+              Divider(color: Colors.black, thickness: 2),
 
-              Divider(
-                color: Colors.black,
-                thickness: 2,
-              ),
-
+              // CGST
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    // default value
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
                         "CGST",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // FETCH FROM MODEL IF NOT THERE THEN DIVIDE GST BY 2 AND STORE THE VALUE IN CGST AND SGST
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
-                        "@1.5%",
+                        "@${(getGSTPercentage() / 2).toStringAsFixed(2)}%",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // AMOUNT OF CGST ON TOTAL AMOUNT (OR SIMPLY GST AMOUNT BY 2)
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.22,
                       child: Text(
-                        "1234567",
+                        "${getCGSTAmount().toStringAsFixed(2)}",
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                   ],
                 ),
               ),
+
+              // SGST
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    // default value
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
                         "SGST",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // FETCH FROM MODEL IF NOT THERE THEN DIVIDE GST BY 2 AND STORE THE VALUE IN CGST AND SGST
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
-                        "@1.5%",
+                        "@${(getGSTPercentage() / 2).toStringAsFixed(2)}%",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // AMOUNT OF CGST ON TOTAL AMOUNT (OR SIMPLY GST AMOUNT BY 2)
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.22,
                       child: Text(
-                        "1234567",
+                        "${getSGSTAmount().toStringAsFixed(2)}",
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
                   ],
                 ),
               ),
+              Divider(color: Colors.black, thickness: 2),
 
-              Divider(
-                color: Colors.black,
-                thickness: 2,
-              ),
-
+              // GRAND TOTAL
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        "",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
-                      ),
-                    ),
-
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
                         "",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // default value
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.15,
                       child: Text(
-                        "TOTAL",
+                        "GRAND TOTAL",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
-
-),
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
                       ),
                     ),
-                    // TOTAL AMOUNT + BOTH GST
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.22,
                       child: Text(
-                        "12,34,567",
+                        "${getGrandTotal().toStringAsFixed(2)}",
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.014,
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.014),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.black, thickness: 2),
 
-),
+              // FINAL AMOUNT IN WORDS
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.1,
+                child: Row(
+                  children: [
+                    Text("Amt in Words: ",  maxLines: 2,  style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.02,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                    Text(
+                      numberToWords(getGrandTotal()),
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.02,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ),
 
-              Divider(
-                color: Colors.black,
-                thickness: 2,
-              ),
-
-
-              // final amount (last one) to be printed in text
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.1,
-                child: Text("Twelve Lacs Thirty Four Thousand Three Hundred and Sixty Seven", style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.02,
-                  fontWeight: FontWeight.bold
-                ),),
-              ),
-
+              // USER & SALESPERSON
               Row(
                 children: [
                   SizedBox(
@@ -673,7 +599,8 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "USER   : ",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.02,
                         ),
                       )),
                   SizedBox(
@@ -681,7 +608,8 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "KESRI",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.02,
                         ),
                       ))
                 ],
@@ -693,7 +621,8 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "SALESPERSON   : ",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.02,
                         ),
                       )),
                   SizedBox(
@@ -701,14 +630,13 @@ class _ReceiptUiState extends State<ReceiptUi> {
                       child: Text(
                         "BHAVISHA V",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.02,
                         ),
                       ))
                 ],
               ),
-
-              SizedBox(height: MediaQuery.of(context).size.height * 0.1,),
-
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -717,7 +645,8 @@ class _ReceiptUiState extends State<ReceiptUi> {
                     child: Text(
                       "E. & O.E",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
+                        fontWeight: FontWeight.bold,
+                        fontSize: MediaQuery.of(context).size.width * 0.02,
                       ),
                     ),
                   ),
@@ -726,15 +655,13 @@ class _ReceiptUiState extends State<ReceiptUi> {
                     child: Text(
                       "SIGN",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.02,
+                        fontWeight: FontWeight.bold,
+                        fontSize: MediaQuery.of(context).size.width * 0.02,
                       ),
                     ),
                   ),
-
                 ],
               )
-
-
             ],
           ),
         ),

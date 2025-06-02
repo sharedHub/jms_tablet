@@ -86,33 +86,40 @@ class IconGrid extends StatelessWidget {
                   // color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Center(
-                  child:
-                  SvgPicture.asset(
-                    item['iconPath'],
-                    width: MediaQuery.of(context).size.width * 0.0075,
-                    height: MediaQuery.of(context).size.height * 0.09,
-                  )
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
 
-                  // SvgPicture.asset(
-                  //   item['iconPath'],
-                  //   width: 24,
-                  //   height: 24,
-                  //   colorFilter:
-                  //   ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                  // ),
+                  child: Center(
+                    child:
+                    SvgPicture.asset(
+                      item['iconPath'],
+                      width: MediaQuery.of(context).size.width * 0.0075,
+                      height: MediaQuery.of(context).size.height * 0.09,
+                    )
+
+                    // SvgPicture.asset(
+                    //   item['iconPath'],
+                    //   width: 24,
+                    //   height: 24,
+                    //   colorFilter:
+                    //   ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    // ),
+                  ),
                 ),
               ),
               SizedBox(height: 6),
-              Text(
-                item['label'].replaceFirst(' ', '\n'),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+                child: Text(
+                  item['label'].replaceFirst(' ', '\n'),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
             ],

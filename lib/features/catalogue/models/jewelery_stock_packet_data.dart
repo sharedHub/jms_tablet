@@ -71,6 +71,79 @@ class JewelleryStockPacketData {
     this.packetSieve,
   });
 
+  // 👇 CopyWith Method Added Here
+  JewelleryStockPacketData copyWith({
+    int? packetSerial,
+    String? itemCid,
+    String? itemYear,
+    String? itemGroup,
+    String? itemInitial,
+    String? itemTagNo,
+    int? packetId,
+    String? packetInitial,
+    String? packetDescription,
+    String? packetUnits,
+    String? packetType,
+    int? packetQuantity,
+    double? packetWeight,
+    double? packetAddWeight,
+    String? packetRateOn,
+    double? packetRate,
+    double? packetTAmount,
+    double? packetValue,
+    double? packetPurity,
+    double? packetTouch,
+    double? packetSPcnt,
+    double? packetSRate,
+    double? packetSValue,
+    String? packetSubLot,
+    int? packetSubLotID,
+    String? packetRemarks,
+    double? packetHRate,
+    double? packetHCharges,
+    String? packetCut,
+    String? packetClarity,
+    String? packetColour,
+    String? packetBranch,
+    String? packetSieve,
+  }) {
+    return JewelleryStockPacketData(
+      packetSerial: packetSerial ?? this.packetSerial,
+      itemCid: itemCid ?? this.itemCid,
+      itemYear: itemYear ?? this.itemYear,
+      itemGroup: itemGroup ?? this.itemGroup,
+      itemInitial: itemInitial ?? this.itemInitial,
+      itemTagNo: itemTagNo ?? this.itemTagNo,
+      packetId: packetId ?? this.packetId,
+      packetInitial: packetInitial ?? this.packetInitial,
+      packetDescription: packetDescription ?? this.packetDescription,
+      packetUnits: packetUnits ?? this.packetUnits,
+      packetType: packetType ?? this.packetType,
+      packetQuantity: packetQuantity ?? this.packetQuantity,
+      packetWeight: packetWeight ?? this.packetWeight,
+      packetAddWeight: packetAddWeight ?? this.packetAddWeight,
+      packetRateOn: packetRateOn ?? this.packetRateOn,
+      packetRate: packetRate ?? this.packetRate,
+      packetTAmount: packetTAmount ?? this.packetTAmount,
+      packetValue: packetValue ?? this.packetValue,
+      packetPurity: packetPurity ?? this.packetPurity,
+      packetTouch: packetTouch ?? this.packetTouch,
+      packetSPcnt: packetSPcnt ?? this.packetSPcnt,
+      packetSRate: packetSRate ?? this.packetSRate,
+      packetSValue: packetSValue ?? this.packetSValue,
+      packetSubLot: packetSubLot ?? this.packetSubLot,
+      packetSubLotID: packetSubLotID ?? this.packetSubLotID,
+      packetRemarks: packetRemarks ?? this.packetRemarks,
+      packetHRate: packetHRate ?? this.packetHRate,
+      packetHCharges: packetHCharges ?? this.packetHCharges,
+      packetCut: packetCut ?? this.packetCut,
+      packetClarity: packetClarity ?? this.packetClarity,
+      packetColour: packetColour ?? this.packetColour,
+      packetBranch: packetBranch ?? this.packetBranch,
+      packetSieve: packetSieve ?? this.packetSieve,
+    );
+  }
+
   factory JewelleryStockPacketData.fromJson(Map<String, dynamic> json) =>
       JewelleryStockPacketData(
         packetSerial: json["packetSerial"],
@@ -144,7 +217,6 @@ class JewelleryStockPacketData {
     "packetSieve": packetSieve,
   };
 
-  //empty models
   static JewelleryStockPacketData empty() {
     return JewelleryStockPacketData(
       packetSerial: 0,

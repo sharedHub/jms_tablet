@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
-
 import '../../../shared/date_time_parser.dart';
 import '../../../shared/model/metal_master_model.dart';
 import 'jewelery_stock_packet_data.dart';
@@ -103,9 +102,7 @@ class JewelleryStockItemData {
   final double? itemSSValue;
   final int? itemWVNo;
   final int? itemWID;
-
-  // 🔽 NEW FIELD TO STORE IMAGE BYTES
-  Uint8List? imageBytes;
+  final Uint8List? imageBytes;
 
   JewelleryStockItemData({
     this.isAutoBarcode,
@@ -204,7 +201,7 @@ class JewelleryStockItemData {
     this.itemSSValue,
     this.itemWVNo,
     this.itemWID,
-    this.imageBytes, // 🔼 Initialize new field
+    this.imageBytes, // 🔼 Image bytes included
   });
 
   factory JewelleryStockItemData.fromJson(Map<String, dynamic> json) {
@@ -307,7 +304,6 @@ class JewelleryStockItemData {
       itemSSValue: doubleParser(json["itemSSValue"]),
       itemWVNo: json["itemWVNo"],
       itemWID: json["itemWID"],
-      // 🔽 Default to null until loaded
       imageBytes: null,
     );
   }
@@ -407,7 +403,6 @@ class JewelleryStockItemData {
       "itemSSValue": itemSSValue,
       "itemWVNo": itemWVNo,
       "itemWID": itemWID,
-      // 🔽 Do not serialize imageBytes
     };
   }
 
@@ -504,8 +499,512 @@ class JewelleryStockItemData {
       itemSSValue: 0.0,
       itemWVNo: 0,
       itemWID: 0,
-      // 🔽 Default for empty
       imageBytes: null,
+    );
+  }
+
+  // ✅ CopyWith Method
+  JewelleryStockItemData copyWith({
+    bool? isAutoBarcode,
+    bool? printWithRate,
+    String? itemCid,
+    String? itemYear,
+    String? itemBLocation,
+    String? itemLocation,
+    String? itemGroup,
+    String? itemInitial,
+    String? itemSub,
+    String? itemTagNo,
+    int? itemMid,
+    String? itemMLot,
+    String? metalColour,
+    String? itemDescription,
+    String? itemSpecification,
+    String? itemDesignNo,
+    String? itemSize,
+    double? itemPurity,
+    double? itemTouch,
+    int? itemQuantity,
+    double? itemGrossWeight,
+    double? itemNetWeight,
+    double? itemMRate,
+    String? itemMrOn,
+    double? itemMValue,
+    double? itemStudValue,
+    double? itemLRate,
+    double? itemLCharges,
+    double? itemRCharges,
+    double? itemOCharges,
+    double? itemCPrice,
+    String? itemSource,
+    DateTime? itemRcdDate,
+    String? itemStatus,
+    String? itemEUser,
+    DateTime? itemEDate,
+    String? itemLrOn,
+    String? itemBranch,
+    String? itemCategory,
+    double? itemChgWeight,
+    double? itemSetChgs,
+    double? itemRodChgs,
+    double? itemSPrice,
+    String? itemSection,
+    int? itemDPcs,
+    double? itemDWeight,
+    int? itemCPcs,
+    double? itemCWeight,
+    double? itemChainWeight,
+    String? CCode,
+    List<JewelleryStockPacketData>? subItems,
+    String? itemSetNo,
+    String? itemRFID,
+    String? itemQuality,
+    String? itemHUIDNo,
+    DateTime? itemHUIDate,
+    int? itemSerial,
+    String? itemWCode,
+    double? itemTPrice,
+    String? itemWName,
+    bool? itemHMFlag,
+    String? itemCounter,
+    String? itemDMode,
+    String? itemDModeName,
+    int? mGroupID,
+    String? iFillPath,
+    String? categoryCode,
+    String? itemImagepath,
+    String? itemCertificate,
+    String? itemSubName,
+    String? itemPMaster,
+    double? itemAddWeight,
+    double? itemHChgs,
+    double? itemEnamelChgs,
+    double? itemStrChgs,
+    double? itemStampChgs,
+    double? itemCertChgs,
+    DateTime? itemOrgDate,
+    String? itemBrand,
+    String? tempCatCode,
+    String? itemSubCode,
+    String? itemBarcode,
+    double? itemGSTPcnt,
+    double? itemGSTAmt,
+    double? itemFPrice,
+    String? itemCCode,
+    double? itemSMRate,
+    String? itemSMROn,
+    double? itemSMValue,
+    double? itemSLRate,
+    String? itemSLROn,
+    double? itemSLabour,
+    double? itemSOChgs,
+    double? itemSSValue,
+    int? itemWVNo,
+    int? itemWID,
+    Uint8List? imageBytes,
+  }) =>
+      JewelleryStockItemData(
+        isAutoBarcode: isAutoBarcode ?? this.isAutoBarcode,
+        printWithRate: printWithRate ?? this.printWithRate,
+        itemCid: itemCid ?? this.itemCid,
+        itemYear: itemYear ?? this.itemYear,
+        itemBLocation: itemBLocation ?? this.itemBLocation,
+        itemLocation: itemLocation ?? this.itemLocation,
+        itemGroup: itemGroup ?? this.itemGroup,
+        itemInitial: itemInitial ?? this.itemInitial,
+        itemSub: itemSub ?? this.itemSub,
+        itemTagNo: itemTagNo ?? this.itemTagNo,
+        itemMid: itemMid ?? this.itemMid,
+        itemMLot: itemMLot ?? this.itemMLot,
+        metalColour: metalColour ?? this.metalColour,
+        itemDescription: itemDescription ?? this.itemDescription,
+        itemSpecification: itemSpecification ?? this.itemSpecification,
+        itemDesignNo: itemDesignNo ?? this.itemDesignNo,
+        itemSize: itemSize ?? this.itemSize,
+        itemPurity: itemPurity ?? this.itemPurity,
+        itemTouch: itemTouch ?? this.itemTouch,
+        itemQuantity: itemQuantity ?? this.itemQuantity,
+        itemGrossWeight: itemGrossWeight ?? this.itemGrossWeight,
+        itemNetWeight: itemNetWeight ?? this.itemNetWeight,
+        itemMRate: itemMRate ?? this.itemMRate,
+        itemMrOn: itemMrOn ?? this.itemMrOn,
+        itemMValue: itemMValue ?? this.itemMValue,
+        itemStudValue: itemStudValue ?? this.itemStudValue,
+        itemLRate: itemLRate ?? this.itemLRate,
+        itemLCharges: itemLCharges ?? this.itemLCharges,
+        itemRCharges: itemRCharges ?? this.itemRCharges,
+        itemOCharges: itemOCharges ?? this.itemOCharges,
+        itemCPrice: itemCPrice ?? this.itemCPrice,
+        itemSource: itemSource ?? this.itemSource,
+        itemRcdDate: itemRcdDate ?? this.itemRcdDate,
+        itemStatus: itemStatus ?? this.itemStatus,
+        itemEUser: itemEUser ?? this.itemEUser,
+        itemEDate: itemEDate ?? this.itemEDate,
+        itemLrOn: itemLrOn ?? this.itemLrOn,
+        itemBranch: itemBranch ?? this.itemBranch,
+        itemCategory: itemCategory ?? this.itemCategory,
+        itemChgWeight: itemChgWeight ?? this.itemChgWeight,
+        itemSetChgs: itemSetChgs ?? this.itemSetChgs,
+        itemRodChgs: itemRodChgs ?? this.itemRodChgs,
+        itemSPrice: itemSPrice ?? this.itemSPrice,
+        itemSection: itemSection ?? this.itemSection,
+        itemDPcs: itemDPcs ?? this.itemDPcs,
+        itemDWeight: itemDWeight ?? this.itemDWeight,
+        itemCPcs: itemCPcs ?? this.itemCPcs,
+        itemCWeight: itemCWeight ?? this.itemCWeight,
+        itemChainWeight: itemChainWeight ?? this.itemChainWeight,
+        CCode: CCode ?? this.CCode,
+        subItems: subItems ?? this.subItems,
+        itemSetNo: itemSetNo ?? this.itemSetNo,
+        itemRFID: itemRFID ?? this.itemRFID,
+        itemQuality: itemQuality ?? this.itemQuality,
+        itemHUIDNo: itemHUIDNo ?? this.itemHUIDNo,
+        itemHUIDate: itemHUIDate ?? this.itemHUIDate,
+        itemSerial: itemSerial ?? this.itemSerial,
+        itemWCode: itemWCode ?? this.itemWCode,
+        itemTPrice: itemTPrice ?? this.itemTPrice,
+        itemWName: itemWName ?? this.itemWName,
+        itemHMFlag: itemHMFlag ?? this.itemHMFlag,
+        itemCounter: itemCounter ?? this.itemCounter,
+        itemDMode: itemDMode ?? this.itemDMode,
+        itemDModeName: itemDModeName ?? this.itemDModeName,
+        mGroupID: mGroupID ?? this.mGroupID,
+        iFillPath: iFillPath ?? this.iFillPath,
+        categoryCode: categoryCode ?? this.categoryCode,
+        itemImagepath: itemImagepath ?? this.itemImagepath,
+        itemCertificate: itemCertificate ?? this.itemCertificate,
+        itemSubName: itemSubName ?? this.itemSubName,
+        itemPMaster: itemPMaster ?? this.itemPMaster,
+        itemAddWeight: itemAddWeight ?? this.itemAddWeight,
+        itemHChgs: itemHChgs ?? this.itemHChgs,
+        itemEnamelChgs: itemEnamelChgs ?? this.itemEnamelChgs,
+        itemStrChgs: itemStrChgs ?? this.itemStrChgs,
+        itemStampChgs: itemStampChgs ?? this.itemStampChgs,
+        itemCertChgs: itemCertChgs ?? this.itemCertChgs,
+        itemOrgDate: itemOrgDate ?? this.itemOrgDate,
+        itemBrand: itemBrand ?? this.itemBrand,
+        tempCatCode: tempCatCode ?? this.tempCatCode,
+        itemSubCode: itemSubCode ?? this.itemSubCode,
+        itemBarcode: itemBarcode ?? this.itemBarcode,
+        itemGSTPcnt: itemGSTPcnt ?? this.itemGSTPcnt,
+        itemGSTAmt: itemGSTAmt ?? this.itemGSTAmt,
+        itemFPrice: itemFPrice ?? this.itemFPrice,
+        itemCCode: itemCCode ?? this.itemCCode,
+        itemSMRate: itemSMRate ?? this.itemSMRate,
+        itemSMROn: itemSMROn ?? this.itemSMROn,
+        itemSMValue: itemSMValue ?? this.itemSMValue,
+        itemSLRate: itemSLRate ?? this.itemSLRate,
+        itemSLROn: itemSLROn ?? this.itemSLROn,
+        itemSLabour: itemSLabour ?? this.itemSLabour,
+        itemSOChgs: itemSOChgs ?? this.itemSOChgs,
+        itemSSValue: itemSSValue ?? this.itemSSValue,
+        itemWVNo: itemWVNo ?? this.itemWVNo,
+        itemWID: itemWID ?? this.itemWID,
+        imageBytes: imageBytes ?? this.imageBytes,
+      );
+
+  // ✅ toBuilder Method
+  JewelleryStockItemDataBuilder toBuilder() {
+    return JewelleryStockItemDataBuilder()
+      ..isAutoBarcode = isAutoBarcode
+      ..printWithRate = printWithRate
+      ..itemCid = itemCid
+      ..itemYear = itemYear
+      ..itemBLocation = itemBLocation
+      ..itemLocation = itemLocation
+      ..itemGroup = itemGroup
+      ..itemInitial = itemInitial
+      ..itemSub = itemSub
+      ..itemTagNo = itemTagNo
+      ..itemMid = itemMid
+      ..itemMLot = itemMLot
+      ..metalColour = metalColour
+      ..itemDescription = itemDescription
+      ..itemSpecification = itemSpecification
+      ..itemDesignNo = itemDesignNo
+      ..itemSize = itemSize
+      ..itemPurity = itemPurity
+      ..itemTouch = itemTouch
+      ..itemQuantity = itemQuantity
+      ..itemGrossWeight = itemGrossWeight
+      ..itemNetWeight = itemNetWeight
+      ..itemMRate = itemMRate
+      ..itemMrOn = itemMrOn
+      ..itemMValue = itemMValue
+      ..itemStudValue = itemStudValue
+      ..itemLRate = itemLRate
+      ..itemLCharges = itemLCharges
+      ..itemRCharges = itemRCharges
+      ..itemOCharges = itemOCharges
+      ..itemCPrice = itemCPrice
+      ..itemSource = itemSource
+      ..itemRcdDate = itemRcdDate
+      ..itemStatus = itemStatus
+      ..itemEUser = itemEUser
+      ..itemEDate = itemEDate
+      ..itemLrOn = itemLrOn
+      ..itemBranch = itemBranch
+      ..itemCategory = itemCategory
+      ..itemChgWeight = itemChgWeight
+      ..itemSetChgs = itemSetChgs
+      ..itemRodChgs = itemRodChgs
+      ..itemSPrice = itemSPrice
+      ..itemSection = itemSection
+      ..itemDPcs = itemDPcs
+      ..itemDWeight = itemDWeight
+      ..itemCPcs = itemCPcs
+      ..itemCWeight = itemCWeight
+      ..itemChainWeight = itemChainWeight
+      ..CCode = CCode
+      ..subItems = subItems
+      ..itemSetNo = itemSetNo
+      ..itemRFID = itemRFID
+      ..itemQuality = itemQuality
+      ..itemHUIDNo = itemHUIDNo
+      ..itemHUIDate = itemHUIDate
+      ..itemSerial = itemSerial
+      ..itemWCode = itemWCode
+      ..itemTPrice = itemTPrice
+      ..itemWName = itemWName
+      ..itemHMFlag = itemHMFlag
+      ..itemCounter = itemCounter
+      ..itemDMode = itemDMode
+      ..itemDModeName = itemDModeName
+      ..mGroupID = mGroupID
+      ..iFillPath = iFillPath
+      ..categoryCode = categoryCode
+      ..itemImagepath = itemImagepath
+      ..itemCertificate = itemCertificate
+      ..itemSubName = itemSubName
+      ..itemPMaster = itemPMaster
+      ..itemAddWeight = itemAddWeight
+      ..itemHChgs = itemHChgs
+      ..itemEnamelChgs = itemEnamelChgs
+      ..itemCertChgs = itemCertChgs
+      ..itemStampChgs = itemStampChgs
+      ..itemStrChgs = itemStrChgs
+      ..itemOrgDate = itemOrgDate
+      ..itemBrand = itemBrand
+      ..tempCatCode = tempCatCode
+      ..itemSubCode = itemSubCode
+      ..itemBarcode = itemBarcode
+      ..itemGSTPcnt = itemGSTPcnt
+      ..itemGSTAmt = itemGSTAmt
+      ..itemFPrice = itemFPrice
+      ..itemCCode = itemCCode
+      ..itemSMRate = itemSMRate
+      ..itemSMROn = itemSMROn
+      ..itemSMValue = itemSMValue
+      ..itemSLRate = itemSLRate
+      ..itemSLROn = itemSLROn
+      ..itemSLabour = itemSLabour
+      ..itemSOChgs = itemSOChgs
+      ..itemSSValue = itemSSValue
+      ..itemWVNo = itemWVNo
+      ..itemWID = itemWID
+      ..imageBytes = imageBytes;
+  }
+}
+
+// 🧱 Builder Class for Fluent Updates
+class JewelleryStockItemDataBuilder {
+  bool? isAutoBarcode;
+  bool? printWithRate;
+  String? itemCid;
+  String? itemYear;
+  String? itemBLocation;
+  String? itemLocation;
+  String? itemGroup;
+  String? itemInitial;
+  String? itemSub;
+  String? itemTagNo;
+  int? itemMid;
+  String? itemMLot;
+  String? metalColour;
+  String? itemDescription;
+  String? itemSpecification;
+  String? itemDesignNo;
+  String? itemSize;
+  double? itemPurity;
+  double? itemTouch;
+  int? itemQuantity;
+  double? itemGrossWeight;
+  double? itemNetWeight;
+  double? itemMRate;
+  String? itemMrOn;
+  double? itemMValue;
+  double? itemStudValue;
+  double? itemLRate;
+  double? itemLCharges;
+  double? itemRCharges;
+  double? itemOCharges;
+  double? itemCPrice;
+  String? itemSource;
+  DateTime? itemRcdDate;
+  String? itemStatus;
+  String? itemEUser;
+  DateTime? itemEDate;
+  String? itemLrOn;
+  String? itemBranch;
+  String? itemCategory;
+  double? itemChgWeight;
+  double? itemSetChgs;
+  double? itemRodChgs;
+  double? itemSPrice;
+  String? itemSection;
+  int? itemDPcs;
+  double? itemDWeight;
+  int? itemCPcs;
+  double? itemCWeight;
+  double? itemChainWeight;
+  String? CCode;
+  List<JewelleryStockPacketData>? subItems;
+  String? itemSetNo;
+  String? itemRFID;
+  String? itemQuality;
+  String? itemHUIDNo;
+  DateTime? itemHUIDate;
+  int? itemSerial;
+  String? itemWCode;
+  double? itemTPrice;
+  String? itemWName;
+  bool? itemHMFlag;
+  String? itemCounter;
+  String? itemDMode;
+  String? itemDModeName;
+  int? mGroupID;
+  String? iFillPath;
+  String? categoryCode;
+  String? itemImagepath;
+  String? itemCertificate;
+  String? itemSubName;
+  String? itemPMaster;
+  double? itemAddWeight;
+  double? itemHChgs;
+  double? itemEnamelChgs;
+  double? itemStrChgs;
+  double? itemStampChgs;
+  double? itemCertChgs;
+  DateTime? itemOrgDate;
+  String? itemBrand;
+  String? tempCatCode;
+  String? itemSubCode;
+  String? itemBarcode;
+  double? itemGSTPcnt;
+  double? itemGSTAmt;
+  double? itemFPrice;
+  String? itemCCode;
+  double? itemSMRate;
+  String? itemSMROn;
+  double? itemSMValue;
+  double? itemSLRate;
+  String? itemSLROn;
+  double? itemSLabour;
+  double? itemSOChgs;
+  double? itemSSValue;
+  int? itemWVNo;
+  int? itemWID;
+  Uint8List? imageBytes;
+
+  JewelleryStockItemData build() {
+    return JewelleryStockItemData(
+      isAutoBarcode: isAutoBarcode,
+      printWithRate: printWithRate,
+      itemCid: itemCid,
+      itemYear: itemYear,
+      itemBLocation: itemBLocation,
+      itemLocation: itemLocation,
+      itemGroup: itemGroup,
+      itemInitial: itemInitial,
+      itemSub: itemSub,
+      itemTagNo: itemTagNo,
+      itemMid: itemMid,
+      itemMLot: itemMLot,
+      metalColour: metalColour,
+      itemDescription: itemDescription,
+      itemSpecification: itemSpecification,
+      itemDesignNo: itemDesignNo,
+      itemSize: itemSize,
+      itemPurity: itemPurity,
+      itemTouch: itemTouch,
+      itemQuantity: itemQuantity,
+      itemGrossWeight: itemGrossWeight,
+      itemNetWeight: itemNetWeight,
+      itemMRate: itemMRate,
+      itemMrOn: itemMrOn,
+      itemMValue: itemMValue,
+      itemStudValue: itemStudValue,
+      itemLRate: itemLRate,
+      itemLCharges: itemLCharges,
+      itemRCharges: itemRCharges,
+      itemOCharges: itemOCharges,
+      itemCPrice: itemCPrice,
+      itemSource: itemSource,
+      itemRcdDate: itemRcdDate,
+      itemStatus: itemStatus,
+      itemEUser: itemEUser,
+      itemEDate: itemEDate,
+      itemLrOn: itemLrOn,
+      itemBranch: itemBranch,
+      itemCategory: itemCategory,
+      itemChgWeight: itemChgWeight,
+      itemSetChgs: itemSetChgs,
+      itemRodChgs: itemRodChgs,
+      itemSPrice: itemSPrice,
+      itemSection: itemSection,
+      itemDPcs: itemDPcs,
+      itemDWeight: itemDWeight,
+      itemCPcs: itemCPcs,
+      itemCWeight: itemCWeight,
+      itemChainWeight: itemChainWeight,
+      CCode: CCode,
+      subItems: subItems,
+      itemSetNo: itemSetNo,
+      itemRFID: itemRFID,
+      itemQuality: itemQuality,
+      itemHUIDNo: itemHUIDNo,
+      itemHUIDate: itemHUIDate,
+      itemSerial: itemSerial,
+      itemWCode: itemWCode,
+      itemTPrice: itemTPrice,
+      itemWName: itemWName,
+      itemHMFlag: itemHMFlag,
+      itemCounter: itemCounter,
+      itemDMode: itemDMode,
+      itemDModeName: itemDModeName,
+      mGroupID: mGroupID,
+      iFillPath: iFillPath,
+      categoryCode: categoryCode,
+      itemImagepath: itemImagepath,
+      itemCertificate: itemCertificate,
+      itemSubName: itemSubName,
+      itemPMaster: itemPMaster,
+      itemAddWeight: itemAddWeight,
+      itemHChgs: itemHChgs,
+      itemEnamelChgs: itemEnamelChgs,
+      itemCertChgs: itemCertChgs,
+      itemStampChgs: itemStampChgs,
+      itemStrChgs: itemStrChgs,
+      itemOrgDate: itemOrgDate,
+      itemBrand: itemBrand,
+      tempCatCode: tempCatCode,
+      itemSubCode: itemSubCode,
+      itemBarcode: itemBarcode,
+      itemGSTPcnt: itemGSTPcnt,
+      itemGSTAmt: itemGSTAmt,
+      itemFPrice: itemFPrice,
+      itemCCode: itemCCode,
+      itemSMRate: itemSMRate,
+      itemSMROn: itemSMROn,
+      itemSMValue: itemSMValue,
+      itemSLRate: itemSLRate,
+      itemSLROn: itemSLROn,
+      itemSLabour: itemSLabour,
+      itemSOChgs: itemSOChgs,
+      itemSSValue: itemSSValue,
+      itemWVNo: itemWVNo,
+      itemWID: itemWID,
+      imageBytes: imageBytes,
     );
   }
 }

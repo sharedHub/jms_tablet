@@ -24,7 +24,7 @@ class CatalogueRepository {
 
       if (response.statusCode == 200) {
         final decodeJson = jsonDecode(response.body);
-        debugPrint('Fetched raw data: $decodeJson[1]');
+        debugPrint('api model raw data is successfully called : $decodeJson[1]');
         // Connect to SMB before fetching images
         // await smbClient.connect();
 
